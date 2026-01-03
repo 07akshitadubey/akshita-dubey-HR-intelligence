@@ -1,0 +1,30 @@
+Total Payroll = SUM(HR_Cleaned_Dataset[TotalPay])
+
+Headcount = DISTINCTCOUNT(HR_Cleaned_Dataset[EmployeeID])
+
+Overtime Cost = SUM(HR_Cleaned_Dataset[OT_Pay])
+
+Overtime Cost % = DIVIDE([Overtime Cost],[Total Payroll])
+
+Overtime Abuse Cases = SUMX(HR_Cleaned_Dataset, IF(HR_Cleaned_Dataset[OvertimeAbuseFlag]=TRUE(),1,0))
+
+Ghost Employees = SUMX(HR_Cleaned_Dataset, IF(HR_Cleaned_Dataset[GhostEmployeeFlag]=TRUE(),1,0))
+
+Duplicate Salary Credits = SUMX(HR_Cleaned_Dataset, IF(HR_Cleaned_Dataset[DuplicateCredit]=TRUE(),1,0))
+
+Salary Leakage Amount = SUMX(FILTER(HR_Cleaned_Dataset,HR_Cleaned_Dataset[LeakageFlag]=TRUE()),HR_Cleaned_Dataset[TotalPay])
+
+Salary Leakage % = DIVIDE([Salary Leakage Amount],[Total Payroll])
+
+Attendance Compliance % = 
+VAR compliant =
+    COUNTROWS(
+        FILTER(HR_Cleaned_Dataset, HR_Cleaned_Dataset[AttendanceDays] >= 22)
+    )
+RETURN DIVIDE(compliant, [Headcount])
+
+Payroll by Department = SUM(HR_Cleaned_Dataset[TotalPay])
+
+Payroll by Role = SUM(HR_Cleaned_Dataset[TotalPay])
+
+Cost per Employee = DIVIDE([Total Payroll],[Headcount])
